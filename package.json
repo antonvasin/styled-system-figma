@@ -2,6 +2,7 @@
   "name": "styled-system-figma",
   "version": "0.1.0",
   "author": "Anton Vasin <antonvasin@me.com>",
+  "description": "Generate styled-system theme from Figma file",
   "license": "MIT",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
