@@ -3,6 +3,8 @@
   "version": "0.1.1",
   "author": "Anton Vasin <antonvasin@me.com>",
   "description": "Generate styled-system theme from Figma file",
+  "repository": "antonvasin/styled-system-figma",
+  "homepage": "https://github.com/antonvasin/styled-system-figma",
   "license": "MIT",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
