@@ -1,6 +1,6 @@
 {
   "name": "styled-system-figma",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Anton Vasin <antonvasin@me.com>",
   "description": "Generate styled-system theme from Figma file",
   "license": "MIT",
