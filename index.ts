@@ -50,7 +50,7 @@ const isEmpty = (node: any) => !node || Object.keys(node).length === 0;
 
 const capitalize = (str: string) => `${str[0].toUpperCase()}${str.substr(1)}`;
 
-const camelize = (str: string) =>
+export const camelize = (str: string) =>
   str
     .replace(/[`'”“’‘,."]+/, '')
     .replace(/_/, ' ')
