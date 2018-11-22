@@ -1,6 +1,6 @@
 # styled-system-figma
 
-Generate theme file for [`styled-system`](https://github.com/jxnblk/styled-system) from Figma file.
+Generate theme file for [`styled-system`](https://github.com/jxnblk/styled-system) from [Figma](https://www.figma.com) file.
 
 ## Install
 
