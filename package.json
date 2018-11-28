@@ -1,6 +1,6 @@
 {
   "name": "styled-system-figma",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Anton Vasin <antonvasin@me.com>",
   "description": "Generate styled-system theme from Figma file",
   "repository": "antonvasin/styled-system-figma",
