@@ -76,15 +76,15 @@ function walk(node: any, cb: (node: any) => any) {
   cb(node);
 
   if (Array.isArray(node)) {
-    node.forEach(el => walk(el, cb));
+    node.forEach((el) => walk(el, cb));
   } else {
-    Object.values(node).forEach(v => walk(v, cb));
+    Object.values(node).forEach((v) => walk(v, cb));
   }
 }
 
 function getColors(node: any) {
   const colors = new Set<string>();
-  walk(node, n => {
+  walk(node, (n) => {
     if (n.color && isColor(n.color)) {
       colors.add(toColorString(n.color));
     }
@@ -105,7 +105,7 @@ function getTypography(node: any): Partial<StyledSystemTheme> {
   const fontSizes = new Set<number>();
   const letterSpacings = new Set<string | number>();
 
-  walk(node, n => {
+  walk(node, (n) => {
     if (!isText(n)) return;
 
     lineHeights.add(n.style.lineHeightPercent / 100);
@@ -125,7 +125,7 @@ function getTypography(node: any): Partial<StyledSystemTheme> {
 function getRadii(node: any) {
   const radii = new Set<number | string>();
 
-  walk(node, n => {
+  walk(node, (n) => {
     if (isRectangle(n) && !!(n as any).rectangleCornerRadii) {
       const corners: number[] = (n as any).rectangleCornerRadii;
       if (isSingleValue(corners)) {
@@ -141,7 +141,7 @@ function getRadii(node: any) {
 function getBoxShadows(node: any) {
   const boxShadows = new Set<string>();
 
-  walk(node, n => {
+  walk(node, (n) => {
     if (!hasEffects(n)) return;
     n.effects.filter(isShadow).forEach((shadow: Effect) => {
       boxShadows.add(toBoxShadow(shadow));
