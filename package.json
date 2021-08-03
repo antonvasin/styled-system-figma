@@ -9,7 +9,8 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
-    "test": "ava"
+    "test": "ava",
+    "test:types": "tsc --noEmit"
   },
   "dependencies": {
     "color-namer": "^1.3.0",

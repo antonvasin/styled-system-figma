@@ -5,7 +5,7 @@ const uniq = <T>(list: T[]) => list.filter((x, i, a) => a.indexOf(x) === i);
 
 const isSingleValue = (list: number[]) => uniq(list).length === 1;
 
-const toPx = (val: number) => (val !== 0 ? val + 'px' : '0');
+const toPx = (val = 0) => (val !== 0 ? val + 'px' : '0');
 
 const toEm = (letterSpacing: number) =>
   letterSpacing === 0 ? 0 : (letterSpacing / 16).toFixed(2) + 'em';
@@ -19,13 +19,14 @@ export const toRgbaString = (node: Color) =>
 
 export const toBoxShadow = (effect: Effect) =>
   effect.type === 'DROP_SHADOW'
-    ? `${toPx(effect!.offset!.x)} ${toPx(effect!.offset!.y)} ${toPx(
+    ? `${toPx(effect?.offset?.x)} ${toPx(effect?.offset?.y)} ${toPx(
         effect.radius,
-      )} ${toColorString(effect.color!)}`
-    : `inset ${toPx(effect.offset!.x!)} ${toPx(effect.offset!.y!)} ${toPx(
+      )} ${toColorString(effect?.color)}`
+    : `inset ${toPx(effect?.offset?.x)} ${toPx(effect?.offset?.y)} ${toPx(
         effect.radius,
-      )} ${toColorString(effect.color!)}`;
+      )} ${toColorString(effect?.color)}`;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isColor = (node: any): node is Color =>
   node.r && node.g && node.b && node.a;
 
@@ -34,18 +35,22 @@ export const isText = (node: Node): node is Text => node.type === 'TEXT';
 export const isRectangle = (node: Node): node is Rectangle =>
   node.type === 'RECTANGLE';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const hasEffects = (node: any) => node.effects && node.effects.length !== 0;
 
 export const isShadow = (node: Effect) =>
-  node.type === 'DROP_SHADOW' || node.type === 'INNER_SHADOW';
+  (node.type === 'DROP_SHADOW' || node.type === 'INNER_SHADOW') &&
+  node.offset &&
+  node.color;
 
 const toHex = (num: number) => normalizeRgba(num).toString(16);
 
-export const toColorString = (node: Color) =>
+export const toColorString = (node: Color = { r: 0, g: 0, b: 0, a: 0 }) =>
   node.a === 1
     ? `#${toHex(node.r)}${toHex(node.g)}${toHex(node.b)}`
     : toRgbaString(node);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isEmpty = (node: any) => !node || Object.keys(node).length === 0;
 
 const capitalize = (str: string) => `${str[0].toUpperCase()}${str.substr(1)}`;
@@ -68,6 +73,7 @@ interface StyledSystemTheme {
   boxShadows?: string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function walk(node: any, cb: (node: any) => any) {
   if (isEmpty(node) || typeof node === 'string' || typeof node === 'number') {
     return;
@@ -82,7 +88,8 @@ function walk(node: any, cb: (node: any) => any) {
   }
 }
 
-function getColors(node: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getColors(node: any): Record<string, string> {
   const colors = new Set<string>();
   walk(node, (n) => {
     if (n.color && isColor(n.color)) {
@@ -91,7 +98,7 @@ function getColors(node: any) {
   });
 
   return [...colors].reduce(
-    (acc: any, color: string) => ({
+    (acc: Record<string, string>, color: string) => ({
       ...acc,
       [camelize(namer(color).ntc[0].name)]: color,
     }),
@@ -99,7 +106,7 @@ function getColors(node: any) {
   );
 }
 
-function getTypography(node: any): Partial<StyledSystemTheme> {
+function getTypography(node: Node[]): Partial<StyledSystemTheme> {
   const lineHeights = new Set<number>();
   const fontWeights = new Set<number>();
   const fontSizes = new Set<number>();
@@ -122,12 +129,12 @@ function getTypography(node: any): Partial<StyledSystemTheme> {
   };
 }
 
-function getRadii(node: any) {
+function getRadii(node: Node[]) {
   const radii = new Set<number | string>();
 
   walk(node, (n) => {
-    if (isRectangle(n) && !!(n as any).rectangleCornerRadii) {
-      const corners: number[] = (n as any).rectangleCornerRadii;
+    if (isRectangle(n) && !!n.rectangleCornerRadii) {
+      const corners = [...n.rectangleCornerRadii];
       if (isSingleValue(corners)) {
         radii.add(uniq(corners)[0]);
       } else {
@@ -138,7 +145,7 @@ function getRadii(node: any) {
 
   return [...radii].sort();
 }
-function getBoxShadows(node: any) {
+function getBoxShadows(node: Node[]) {
   const boxShadows = new Set<string>();
 
   walk(node, (n) => {
@@ -152,7 +159,7 @@ function getBoxShadows(node: any) {
 }
 
 export default function generateTheme(file: FileResponse): StyledSystemTheme {
-  const canvases = file.document.children;
+  const canvases = [...file.document.children];
 
   return {
     colors: getColors(canvases),
